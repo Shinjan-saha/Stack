@@ -1,92 +1,83 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdbool.h>
 
 #define MAX_SIZE 100
 
-struct Stack {
-    int items[MAX_SIZE];
-    int top;
-};
+int stack[MAX_SIZE];
+int top = -1;
 
-void initialize(struct Stack *stack) {
-    stack->top = -1;
+bool isEmpty() {
+    return top == -1;
 }
 
-int is_empty(struct Stack *stack) {
-    return stack->top == -1;
+bool isFull() {
+    return top == MAX_SIZE - 1;
 }
 
-int is_full(struct Stack *stack) {
-    return stack->top == MAX_SIZE - 1;
-}
-
-void push(struct Stack *stack, int item) {
-    if (is_full(stack)) {
-        printf("Stack is full. Cannot push.\n");
+void push(int value) {
+    if (isFull()) {
+        printf("Stack overflow!\n");
         return;
     }
-    stack->items[++stack->top] = item;
-    printf("%d pushed onto the stack.\n", item);
+    stack[++top] = value;
+    printf("%d pushed onto the stack.\n", value);
 }
 
-int pop(struct Stack *stack) {
-    if (is_empty(stack)) {
-        printf("Stack is empty. Cannot pop.\n");
-        return -1;
+int pop() {
+    if (isEmpty()) {
+        printf("Stack underflow!\n");
+        return -1; // Return a sentinel value to indicate underflow
     }
-    return stack->items[stack->top--];
+    return stack[top--];
 }
 
-void display(struct Stack *stack) {
-    if (is_empty(stack)) {
+void display() {
+    if (isEmpty()) {
         printf("Stack is empty.\n");
         return;
     }
-
-    printf("Stack contents:\n");
-    for (int i = stack->top; i >= 0; i--) {
-        printf("%d\n", stack->items[i]);
+    printf("Stack elements: ");
+    for (int i = 0; i <= top; ++i) {
+        printf("%d ", stack[i]);
     }
+    printf("\n");
 }
 
 int main() {
-    struct Stack stack;
-    initialize(&stack);
+    int choice, value;
 
-    int choice, item;
-
-    while (1) {
+    do {
         printf("\nStack Operations:\n");
         printf("1. Push\n");
         printf("2. Pop\n");
         printf("3. Display\n");
-        printf("4. Quit\n");
-
-        printf("Enter your choices : ");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
             case 1:
-                printf("Enter the item to push: ");
-                scanf("%d", &item);
-                push(&stack, item);
+                printf("Enter the value to push: ");
+                scanf("%d", &value);
+                push(value);
                 break;
             case 2:
-                item = pop(&stack);
-                if (item != -1) {
-                    printf("Popped item: %d\n", item);
+                value = pop();
+                if (value != -1) {
+                    printf("%d popped from the stack.\n", value);
                 }
                 break;
             case 3:
-                display(&stack);
+                display();
                 break;
             case 4:
-                printf("Exiting the program.\n");
-                exit(0);
+                printf("Exiting program.\n");
+                break;
             default:
-                printf("Invalid choice. Please enter a valid option.\n");
+                printf("Invalid choice. Please try again.\n");
         }
-    }
+    } while (choice != 4);
 
     return 0;
 }
+
